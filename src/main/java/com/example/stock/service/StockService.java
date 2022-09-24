@@ -2,6 +2,7 @@ package com.example.stock.service;
 
 import com.example.stock.domain.Stock;
 import com.example.stock.repository.StockRepository;
+import org.hibernate.annotations.Synchronize;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,15 +14,13 @@ public class StockService {
     }
 
 
-    public void decrease(Long id, Long quantity){
+    public synchronized void decrease(Long id, Long quantity){
         //get stock
         Stock stock = stockRepository.findById(id).orElseThrow();
         //재고 감소
         stock.decrease(quantity);
         //저장
         stockRepository.saveAndFlush(stock);
-
-
     }
 
 
