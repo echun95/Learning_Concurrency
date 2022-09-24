@@ -1,6 +1,7 @@
 package com.example.stock.service;
 
 import com.example.stock.domain.Stock;
+import com.example.stock.facade.OptimisticLockStockFacade;
 import com.example.stock.repository.StockRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -20,7 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class StockServiceTest {
     @Autowired
-    private PessimisticLockStockService service;
+//    private PessimisticLockStockService service;
+    private OptimisticLockStockFacade service;
 
     @Autowired
     private StockRepository repository;
@@ -55,7 +57,9 @@ class StockServiceTest {
             executorService.submit(()->{
                 try {
                     service.decrease(1L, 1L);
-                }finally {
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                } finally {
                     latch.countDown();
                 }
             });
