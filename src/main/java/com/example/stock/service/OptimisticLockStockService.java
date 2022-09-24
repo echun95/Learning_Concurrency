@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OptimisticLockStockService {
-    private StockRepository repository;
+    private final StockRepository repository;
 
     public OptimisticLockStockService(StockRepository repository) {
         this.repository = repository;
