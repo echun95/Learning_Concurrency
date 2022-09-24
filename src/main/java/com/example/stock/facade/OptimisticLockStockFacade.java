@@ -2,6 +2,7 @@ package com.example.stock.facade;
 
 import com.example.stock.service.OptimisticLockStockService;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class OptimisticLockStockFacade {
