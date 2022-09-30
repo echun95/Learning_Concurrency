@@ -1,7 +1,6 @@
-package com.example.stock.service;
+package com.example.stock.facade;
 
 import com.example.stock.domain.Stock;
-import com.example.stock.facade.OptimisticLockStockFacade;
 import com.example.stock.repository.StockRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -12,16 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class StockServiceTest {
+class LettuceLockStockFacadeTest {
     @Autowired
-    private PessimisticLockStockService service;
+    private LettuceLockStockFacade service;
 
     @Autowired
     private StockRepository repository;
@@ -45,7 +43,7 @@ class StockServiceTest {
 
         Assertions.assertThat(stock.getQuantity()).isEqualTo(99);
     }
-    
+
     @Test
     @DisplayName("동시성 문제 테스트")
     void concurrency() throws Exception  {
@@ -55,7 +53,11 @@ class StockServiceTest {
         for(int i = 0; i < threadCount; i++){
             executorService.submit(()->{
                 try {
-                    service.decrease(1L, 1L);
+                    try {
+                        service.decrease(1L, 1L);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 } finally {
                     latch.countDown();
                 }
@@ -66,8 +68,5 @@ class StockServiceTest {
         Stock stock = repository.findById(1L).orElseThrow();
 
         Assertions.assertThat(stock.getQuantity()).isEqualTo(0);
-
     }
-
-
 }

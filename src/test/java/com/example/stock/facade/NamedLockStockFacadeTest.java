@@ -64,6 +64,4 @@ class NamedLockStockFacadeTest {
 
         Assertions.assertThat(stock.getQuantity()).isEqualTo(0);
     }
-
-
 }

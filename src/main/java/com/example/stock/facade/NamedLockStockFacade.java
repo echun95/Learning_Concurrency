@@ -20,7 +20,7 @@ public class NamedLockStockFacade {
     public void decrease(Long id, Long quantity){
         try{
             lockRepository.getLock(id.toString());
-            service.decrease(id, quantity);
+            service.decrease(id, quantity); //얘만 롤백이 되야함
         }finally {
             lockRepository.releaseLock(id.toString());
         }
